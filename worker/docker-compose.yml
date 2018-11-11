@@ -1,0 +1,35 @@
+version: "3.0"
+
+services:
+    c1:
+      image: honorlessman/slurm-worker:1.0
+      command: ["slurmd"]
+      hostname: c1
+      container_name: c1
+      deploy:
+        placement:
+          constraints:
+            - node.role == worker
+      networks:
+        - manager_slurm
+      volumes:
+        - manager_etc_munge:/etc/munge
+        - manager_etc_slurm:/etc/slurm
+        - manager_slurm_jobdir:/data
+        - manager_var_log_slurm:/var/log/slurm
+      expose:
+        - "6818"
+
+volumes:
+  manager_etc_munge:
+    external: true
+  manager_etc_slurm:
+    external: true
+  manager_slurm_jobdir:
+    external: true
+  manager_var_log_slurm:
+    external: true
+
+networks:
+  manager_slurm:
+    external: true
