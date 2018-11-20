@@ -13,22 +13,38 @@ services:
       networks:
         - manager_slurm
       volumes:
-        - manager_etc_munge:/etc/munge
-        - manager_etc_slurm:/etc/slurm
-        - manager_slurm_jobdir:/data
-        - manager_var_log_slurm:/var/log/slurm
+        - etc_munge:/etc/munge
+        - etc_slurm:/etc/slurm
+        - slurm_jobdir:/data
+        - var_log_slurm:/var/log/slurm
       expose:
         - "6818"
 
 volumes:
-  manager_etc_munge:
-    external: true
-  manager_etc_slurm:
-    external: true
-  manager_slurm_jobdir:
-    external: true
-  manager_var_log_slurm:
-    external: true
+  etc_munge:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.1.107,rw
+      device: ":/nfs/etc_munge"
+  etc_slurm:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.1.107,rw
+      device: ":/nfs/etc_slurm"
+  slurm_jobdir:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.1.107,rw
+      device: ":/nfs/slurm_jobdir"
+  var_log_slurm:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.1.107,rw
+      device: ":/nfs/var_log_slurm"
 
 networks:
   manager_slurm:
