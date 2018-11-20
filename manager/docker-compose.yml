@@ -1,4 +1,4 @@
-version: "3.0"
+version: "3.2"
 
 services:
   mysql:
@@ -66,7 +66,27 @@ networks:
 
 volumes:
   etc_munge:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.1.107,rw
+      device: ":/nfs/etc_munge"
   etc_slurm:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.1.107,rw
+      device: ":/nfs/etc_slurm"
   slurm_jobdir:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.1.107,rw
+      device: ":/nfs/slurm_jobdir"
   var_log_slurm:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.1.107,rw
+      device: ":/nfs/var_log_slurm"
   var_lib_mysql:
