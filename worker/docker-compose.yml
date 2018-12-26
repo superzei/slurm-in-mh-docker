@@ -2,7 +2,7 @@ version: "3.0"
 
 services:
     c1:
-      image: honorlessman/slurm-worker:1.0
+      image: honorlessman/slurm-worker:1.1
       command: ["slurmd"]
       hostname: c1
       container_name: c1
@@ -25,25 +25,25 @@ volumes:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=192.168.1.107,rw
+      o: addr=192.168.1.105,rw
       device: ":/nfs/etc_munge"
   etc_slurm:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=192.168.1.107,rw
+      o: addr=192.168.1.105,rw
       device: ":/nfs/etc_slurm"
   slurm_jobdir:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=192.168.1.107,rw
+      o: addr=192.168.1.105,rw
       device: ":/nfs/slurm_jobdir"
   var_log_slurm:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=192.168.1.107,rw
+      o: addr=192.168.1.105,rw
       device: ":/nfs/var_log_slurm"
 
 networks:
