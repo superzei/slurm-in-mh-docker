@@ -3,21 +3,23 @@
 slurm in multi host docker with swarm
 
 System construction instructions:
-(1) Insall nvidia-docker2(cuda toolkit is not required, only GPU driver is required) on all nodes
-(2) Create a swarm network on manager node
-(3) On both manager and workers build base image. Run build_base.sh script.
-(4) On manager machine run build_run_manager.sh script to build manager image, nfs server and run them.
-(5) On worker machines execute [1] to connect to swarm network. 
-(6) On worker machines run run_worker.sh script to build worker image and contruct a container.
+---------------------------------
+ - (1) Insall nvidia-docker2(cuda toolkit is not required, only GPU driver is required) on all nodes
+ - (2) Create a swarm network on manager node
+ - (3) On both manager and workers build base image. Run build_base.sh script.
+ - (4) On manager machine run build_run_manager.sh script to build manager image, nfs server and run them.
+ - (5) On worker machines execute [1] to connect to swarm network. 
+ - (6) On worker machines run run_worker.sh script to build worker image and contruct a container.
 
 [1]Build alpine to connect to network
 docker run -it --name alpine<number> --network manager_slurm alpine
 
 Scripts and what they do:
-build_base.sh: Constructs base image, which contains required files and programs for slurm, required on all nodes.
-build_run_manager.sh: Constructs manager image, then constructs manager and database containers. Also deploys a container for nfs server, which is used to share files within the network. Will pass the munge key to shared location for future usage.
-run_worker.sh: Constructs worker image, and deploys a container for worker.
-teardown.sh: Simply destroys everything as name suggests.
+-------------------------
+ - build_base.sh: Constructs base image, which contains required files and programs for slurm, required on all nodes.
+ - build_run_manager.sh: Constructs manager image, then constructs manager and database containers. Also deploys a container for nfs server, which is used to share files within the network. Will pass the munge key to shared location for future usage.
+ - run_worker.sh: Constructs worker image, and deploys a container for worker.
+ - teardown.sh: Simply destroys everything as name suggests.
 
 
 To go into bash
@@ -46,11 +48,11 @@ Munge used for security and dependency reasons. Sharing munge key was troublesom
 
 Shared File System
 ------------------
-GlusterFS: Did not work because we were unable to mount it onto volumes.
+ - GlusterFS: Did not work because we were unable to mount it onto volumes.
 
-NFS Server: A NFS server is automatically created with build_run_manager.sh script. Container has multiple shared volumes. DAtaset volume is not shared because it isn't necessarily need to be shared.
+ - NFS Server: A NFS server is automatically created with build_run_manager.sh script. Container has multiple shared volumes. DAtaset volume is not shared because it isn't necessarily need to be shared.
 
-Samba: We tried to fix shared file system problem with samba, but we encountered some access privilege problems, therefore we abandoned this as well. 
+ - Samba: We tried to fix shared file system problem with samba, but we encountered some access privilege problems, therefore we abandoned this as well. 
 
 User Management(Current approach)
 ---------------
@@ -65,23 +67,23 @@ Slurm User Management: There isn't a proper user management and login system wit
 A deamon will consistently run in the background, checking for new files in user directories. Users will not be able to go into slurm manager bash. We do not want any user to interact with slurm.
 
 /*
-?? admin userları oluşturcak, guestler adminden izin isteyecek.
-?? dev'deki dosya erişim izinleri sorulacak.
-?? passwordlar random başlayacak, kullanıcı değiştirebilecek mi?
-?? Bastilion ?
+ - ?? admin userları oluşturcak, guestler adminden izin isteyecek.
+ - ?? dev'deki dosya erişim izinleri sorulacak.
+ - ?? passwordlar random başlayacak, kullanıcı değiştirebilecek mi?
+ - ?? Bastilion ?
 */
 
 Assumptions
 -----------
-(1) Everything are on docker, so we expect os in use to handle docker properly.
-(2) We expect system to run continuously.
-(3) We expect admin to add manage users.
-(4) We expect all nodes are run on ubuntu 16.04 or on a nvidia-docker2 supported linux distro.
-(5) We expect all nodes to have Nvidia GPU cards.
+ - (1) Everything are on docker, so we expect os in use to handle docker properly.
+ - (2) We expect system to run continuously.
+ - (3) We expect admin to add manage users.
+ - (4) We expect all nodes are run on ubuntu 16.04 or on a nvidia-docker2 supported linux distro.
+ - (5) We expect all nodes to have Nvidia GPU cards.
 
 Requirements
 ------------
-(1) All dependencies nvidia-docker2
-(2) A Nvidia GPU, of course...
-(3) Nvidia driver version of >= 410 (we tested it with 384, it didn't work) on host computers of all worker and manager containers.
+ - (1) All dependencies nvidia-docker2
+ - (2) A Nvidia GPU, of course...
+ - (3) Nvidia driver version of >= 410 (we tested it with 384, it didn't work) on host computers of all worker and manager containers.
 
