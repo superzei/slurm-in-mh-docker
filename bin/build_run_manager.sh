@@ -26,7 +26,7 @@ docker exec slurm-nfs-server bash -c 'mkdir /nfs/home'
 
 # deploying container
 cd ../ && \
-docker build -t honorlessman/slurm-manager:1.0 manager/ && \
+docker build -t honorlessman/slurm-manager:1.1 manager/ && \
 cd manager/ && \
-docker-compose up -d && \
+docker-compose --verbose up -d && \
 cd ../
