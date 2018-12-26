@@ -1,1 +1,0 @@
-docker build -t honorlessman/slurm-in-docker:1.0 base/
