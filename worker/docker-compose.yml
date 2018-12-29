@@ -1,11 +1,11 @@
 version: "3.0"
 
 services:
-    c1:
-      image: honorlessman/slurm-worker:1.1
+    compute:
+      image: ${WORKER_IMAGE}
       command: ["slurmd"]
-      hostname: c1
-      container_name: c1
+      hostname: $NODE_NAME
+      container_name: $NODE_NAME
       deploy:
         placement:
           constraints:

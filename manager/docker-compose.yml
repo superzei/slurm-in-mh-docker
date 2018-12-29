@@ -20,7 +20,7 @@ services:
       - var_lib_mysql:/var/lib/mysql
 
   slurmdbd:
-    image: honorlessman/slurm-manager:1.1
+    image: ${MANAGER_IMAGE}
     command: ["slurmdbd"]
     container_name: slurmdbd
     hostname: slurmdbd
@@ -40,7 +40,7 @@ services:
       - mysql
 
   slurmctld:
-    image: honorlessman/slurm-manager:1.1
+    image: ${MANAGER_IMAGE}
     command: ["slurmctld"]
     hostname: slurmctld
     container_name: slurmctld
@@ -69,30 +69,30 @@ volumes:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=${CONTROL_NODE_IP_ADRESS},rw
+      o: addr=${CONTROL_NODE_IP_ADDRESS},rw
       device: ":/nfs/etc_munge"
   etc_slurm:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=${CONTROL_NODE_IP_ADRESS},rw
+      o: addr=${CONTROL_NODE_IP_ADDRESS},rw
       device: ":/nfs/etc_slurm"
   slurm_jobdir:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=${CONTROL_NODE_IP_ADRESS},rw
+      o: addr=${CONTROL_NODE_IP_ADDRESS},rw
       device: ":/nfs/slurm_jobdir"
   var_log_slurm:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=${CONTROL_NODE_IP_ADRESS},rw
+      o: addr=${CONTROL_NODE_IP_ADDRESS},rw
       device: ":/nfs/var_log_slurm"
   login_home:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=${CONTROL_NODE_IP_ADRESS},rw
+      o: addr=${CONTROL_NODE_IP_ADDRESS},rw
       device: ":/nfs/home"
   var_lib_mysql:

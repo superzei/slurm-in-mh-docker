@@ -3,6 +3,14 @@
 # set control node ip adress
 export CONTROL_NODE_IP_ADDRESS="$(cut -d' ' -f1 <<<"$(hostname -I)")"
 
+# set base image name/version
+export BASE_IMAGE=honorlessman/slurm-in-docker:1.2
+
+# set manager image name/version
+export MANAGER_IMAGE=honorlessman/slurm-manager:1.2
+
+echo "Done"
+
 # deploy a nfs server
 docker run -d --privileged --restart=always \
  -v $PWD/../nfs:/nfs \
@@ -29,7 +37,7 @@ docker exec slurm-nfs-server bash -c 'mkdir /nfs/home'
 
 # deploying container
 cd ../ && \
-docker build -t honorlessman/slurm-manager:1.1 manager/ && \
+docker build -t $MANAGER_IMAGE --build-arg BASE_IMAGE manager/ && \
 cd manager/ && \
-docker-compose --verbose up -d && \
+docker-compose up -d && \
 cd ../

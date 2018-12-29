@@ -1,6 +1,7 @@
 cd ../worker/
-docker-compose stop
-docker-compose rm -sf
+
+docker stop c1 && docker rm c1
+docker stop c2 && docker rm c2
 
 cd ../manager
 docker-compose stop
@@ -16,18 +17,14 @@ docker exec slurm-nfs-server rm -rf /nfs/var_log_slurm
 docker stop slurm-nfs-server
 docker rm slurm-nfs-server
 
-docker volume rm manager_etc_munge \
-            manager_etc_slurm \
-            manager_slurm_jobdir \
-            manager_var_lib_mysql \
-            manager_var_log_slurm \
-            manager_login_home
-
 docker volume rm etc_munge \
             etc_slurm \
             slurm_jobdir \
             var_lib_mysql \
             var_log_slurm \
             login_home
+
+docker volume rm $(docker volume ls --quiet --filter "name=manager")
+docker volume rm $(docker volume ls --quite --filter "name=worker")
 
 docker network rm manager_slurm
