@@ -69,30 +69,30 @@ volumes:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=192.168.1.105,rw
+      o: addr=${CONTROL_NODE_IP_ADRESS},rw
       device: ":/nfs/etc_munge"
   etc_slurm:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=192.168.1.105,rw
+      o: addr=${CONTROL_NODE_IP_ADRESS},rw
       device: ":/nfs/etc_slurm"
   slurm_jobdir:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=192.168.1.105,rw
+      o: addr=${CONTROL_NODE_IP_ADRESS},rw
       device: ":/nfs/slurm_jobdir"
   var_log_slurm:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=192.168.1.105,rw
+      o: addr=${CONTROL_NODE_IP_ADRESS},rw
       device: ":/nfs/var_log_slurm"
   login_home:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=192.168.1.105,rw
+      o: addr=${CONTROL_NODE_IP_ADRESS},rw
       device: ":/nfs/home"
   var_lib_mysql:

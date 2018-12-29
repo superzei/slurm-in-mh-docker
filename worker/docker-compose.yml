@@ -10,8 +10,6 @@ services:
         placement:
           constraints:
             - node.role == worker
-      networks:
-        - manager_slurm
       volumes:
         - etc_munge:/etc/munge
         - etc_slurm:/etc/slurm
@@ -25,27 +23,23 @@ volumes:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=192.168.1.105,rw
+      o: addr=${CONTROL_NODE_IP_ADDRESS},rw
       device: ":/nfs/etc_munge"
   etc_slurm:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=192.168.1.105,rw
+      o: addr=${CONTROL_NODE_IP_ADDRESS},rw
       device: ":/nfs/etc_slurm"
   slurm_jobdir:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=192.168.1.105,rw
+      o: addr=${CONTROL_NODE_IP_ADDRESS},rw
       device: ":/nfs/slurm_jobdir"
   var_log_slurm:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=192.168.1.105,rw
+      o: addr=${CONTROL_NODE_IP_ADDRESS},rw
       device: ":/nfs/var_log_slurm"
-
-networks:
-  manager_slurm:
-    external: true

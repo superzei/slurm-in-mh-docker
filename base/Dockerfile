@@ -78,4 +78,5 @@ RUN set -x \
 
 COPY slurm.conf /etc/slurm/slurm.conf
 COPY slurmdbd.conf /etc/slurm/slurmdbd.conf
+COPY gres.conf /etc/slurm/gres.conf
 

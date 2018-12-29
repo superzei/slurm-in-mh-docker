@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# set control node ip adress
+export CONTROL_NODE_IP_ADDRESS="$(cut -d' ' -f1 <<<"$(hostname -I)")"
+
 # deploy a nfs server
 docker run -d --privileged --restart=always \
  -v $PWD/../nfs:/nfs \
