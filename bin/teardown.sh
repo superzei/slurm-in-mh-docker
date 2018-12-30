@@ -25,6 +25,7 @@ docker volume rm etc_munge \
             login_home
 
 docker volume rm $(docker volume ls --quiet --filter "name=manager")
-docker volume rm $(docker volume ls --quite --filter "name=worker")
+docker volume rm $(docker volume ls --quiet --filter "name=worker")
 
-docker network rm manager_slurm
+docker network rm $(docker network ls --quiet --filter "name=worker")
+docker network rm $(docker network ls --quiet --filter "name=manager")
