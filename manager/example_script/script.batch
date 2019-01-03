@@ -1,11 +1,32 @@
 #!/bin/bash -l
 
-#SBATCH -q debug     
-#SBATCH -N 64        
+# Create parameters list
+parameters=()
+# Read config file line by line
+while IFS='' read -r line || [[ -n "$line" ]]; do
+        # Read command
+        command="$(cut -d'=' -f1 <<< $line)"
+        # Check if command is param
+        if [ $command = "param" ]
+        then
+                parameters+=("$(cut -d'=' -f2 <<< $line)")
+        fi
+        # Can add extra commands if neccessary
+done < "main.conf"
+
+#SBATCH -q debug           
 #SBATCH -t 00:20:00  
-#SBATCH -J script_job
-#SBATCH --cpus-per-task=1
-#SBATCH --gres=gpu:2
+#SBATCH -job-name=my_job
+#SBATCH --nodes=1            # 1 node
+#SBATCH --mem=0              # Can use all memory
+
+# Priority should be set on terminal command.
+
+#SBATCH --output=output.txt
+#SBATCH --error=error.txt
+
+#SBATCH --checkpoint=0:1 # Couldn't figure this out yet.
 
 nvcc script.cu -o script.out
-srun -n 2048 ./script.out
+./script.out ${parameters[@]:0:${#parameters[@]}}
+
