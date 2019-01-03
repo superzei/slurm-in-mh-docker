@@ -4,16 +4,21 @@ slurm in multi host docker with swarm
 
 System construction instructions:
 ---------------------------------
- - (1) Insall nvidia-docker2(cuda toolkit is not required, only GPU driver is required) on all nodes
- - (2) Create a swarm network on manager node
- - (3) On both manager and workers build base image. Run build_base.sh script.
- - (4) On manager machine run build_run_manager.sh script to build manager image, nfs server and run them.
- - (5) On worker machines execute [1] to connect to swarm network. 
- - (6) On worker machines run run_worker.sh script to build worker image and contruct a container.
+ - (1) Insall nvidia-docker2(cuda toolkit is not required, only GPU driver is required) on all nodes.
+ - (2) Docker containers need to use --runtime=nvidia, since we use compose you will need to execute [3].
+ - (3) Create a swarm network on manager node.
+ - (4) Run "sudo apt-get install nfs-common" on all nodes.
+ - (5) On both manager and workers build base image. Run build_base.sh script.
+ - (6) On manager machine execute [1], run build_run_manager.sh script to build manager image, nfs server and run them.
+ - (7) On worker machines execute [2] to connect to swarm network. 
+ - (8) On worker machines run run_worker.sh script to build worker image and contruct a container. You will need
 
-[1]Build alpine to connect to network
+[1]$ docker swarm join-token worker, response will be used in worker nodes
+[2]Execute response of [1]
+Build alpine to connect to network
 docker run -it --name alpine<number> --network manager_slurm alpine
-
+[3]Open /etc/docker/daemon.json with a text editor with root access. Add the first level key 
+"default-runtime":"nvidia", then run "sudo service docker restart".
 Scripts and what they do:
 -------------------------
  - build_base.sh: Constructs base image, which contains required files and programs for slurm, required on all nodes.
