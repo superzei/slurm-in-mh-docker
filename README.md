@@ -2,24 +2,39 @@
 
 slurm in multi host docker with swarm
 
-System construction instructions:
+System construction instructions
 ---------------------------------
  - (1) Insall nvidia-docker2(cuda toolkit is not required, only GPU driver is required) on all nodes.
- - (2) Docker containers need to use --runtime=nvidia, since we use compose you will need to execute [3].
+ - (2) Docker containers need to use ```--runtime=nvidia```, since we use compose you will need to execute [3].
  - (3) Create a swarm network on manager node.
- - (4) Run "sudo apt-get install nfs-common" on all nodes.
+ - (4) Run ```sudo apt-get install nfs-common``` on all nodes.
  - (5) On both manager and workers build base image. Run build_base.sh script.
  - (6) On manager machine execute [1], run build_run_manager.sh script to build manager image, nfs server and run them.
  - (7) On worker machines execute [2] to connect to swarm network. 
- - (8) On worker machines run run_worker.sh script to build worker image and contruct a container. You will need
+ - (8) On worker machines run run_worker.sh script to build worker image and contruct a container.
 
-[1]$ docker swarm join-token worker, response will be used in worker nodes
-[2]Execute response of [1]
-Build alpine to connect to network
-docker run -it --name alpine<number> --network manager_slurm alpine
-[3]Open /etc/docker/daemon.json with a text editor with root access. Add the first level key 
-"default-runtime":"nvidia", then run "sudo service docker restart".
-Scripts and what they do:
+ [1]Run ```docker swarm join-token worker ```, response will be used in worker nodes.
+ [2]Execute response of [1] Build alpine to connect to network ```docker run -it --name alpine<number> --network manager_slurm alpine```.
+ [3]Open ```/etc/docker/daemon.json``` with a text editor with root access. Add the first level key ```"default-runtime":"nvidia"```, then run ```"sudo service docker restart"```.
+
+
+Note: Worker should not be destroyed while working, otherwise it will become down.
+Controller should be rebooted and then worker should be rebooted.
+
+System Usage Instructions
+-------------------------
+##### As admin:
+- System construction should be handled.
+- User management will also be handled by the admin. Meaning users will not be able to create an account their own, admin should add them to network.
+
+##### As User:
+ - Users will need to contact the admin to create an account.
+ - Login...
+ - Users will need to add neccessary files to their respective directories.
+ - Users will be able to put their parameters into "main.conf" file, maybe will be able to add extra things there.
+ - Users won't need to manually run their files, system will automatically add them to job queue.
+
+Scripts and what they do
 -------------------------
  - build_base.sh: Constructs base image, which contains required files and programs for slurm, required on all nodes.
  - build_run_manager.sh: Constructs manager image, then constructs manager and database containers. Also deploys a container for nfs server, which is used to share files within the network. Will pass the munge key to shared location for future usage.
@@ -28,19 +43,21 @@ Scripts and what they do:
 
 
 To go into bash
+```sh
 docker exec -it <worker|manager> bash
-
+```
 To add user to system
+```sh
 useradd -m /bin/bash <username>
-    assign password to user
-    passwd <username>
-
+```
+Assign password to user
+```sh
+passwd <username>
+```
 To send ssh request
+```sh
 ssh <username>@<host_ip> -p <user_port>
-
-
-Note: Worker should not be destroyed while working, otherwise it will become down.
-Controller should be rebooted and then worker should be rebooted.
+```
 
 
 Nvidia-docker2
