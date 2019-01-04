@@ -5,34 +5,38 @@ slurm in multi host docker with swarm
 System construction instructions
 ---------------------------------
  - (1) Insall nvidia-docker2(cuda toolkit is not required, only GPU driver is required) on all nodes.
- - (2) Docker containers need to use ```--runtime=nvidia```, since we use compose you will need to execute [3].
+ - (2) Docker containers need to use ```--runtime=nvidia``` to access gpu, since we use compose you will need to execute [3].
  - (3) Create a swarm network on manager node.
  - (4) Run ```sudo apt-get install nfs-common``` on all nodes.
  - (5) On both manager and workers build base image. Run build_base.sh script.
  - (6) On manager machine execute [1], run build_run_manager.sh script to build manager image, nfs server and run them.
  - (7) On worker machines execute [2] to connect to swarm network. 
- - (8) On worker machines run run_worker.sh script to build worker image and contruct a container.
+ - (8) On worker machines run ```run_worker.sh <nodename>``` to build worker image and contruct a container.
 
- [1]Run ```docker swarm join-token worker ```, response will be used in worker nodes.
- [2]Execute response of [1] Build alpine to connect to network ```docker run -it --name alpine<number> --network manager_slurm alpine```.
- [3]Open ```/etc/docker/daemon.json``` with a text editor with root access. Add the first level key ```"default-runtime":"nvidia"```, then run ```"sudo service docker restart"```.
+[1]Run ```docker swarm join-token worker ```, response will be used in worker nodes.
+ 
+[2]Execute response of [1].
+ 
+[3]Open ```/etc/docker/daemon.json``` with a text editor with root access. Add the first level key ```"default-runtime":"nvidia"```, then run ```sudo service docker restart```.
 
 
 Note: Worker should not be destroyed while working, otherwise it will become down.
-Controller should be rebooted and then worker should be rebooted.
+To solve this ```scontrol reconfigure```, ```scontrol update nodename=<nodename> state=down reason=hang``` and ```scontrol update nodename=<nodename> state=resume```  should be run after re-running the worker node in question.
+If it doesn't work controller should be rebooted and then worker should be rebooted.
+
 
 System Usage Instructions
 -------------------------
 ##### As admin:
-- System construction should be handled.
-- User management will also be handled by the admin. Meaning users will not be able to create an account their own, admin should add them to network.
+- System construction should be handled as mentioned above.
+- User management will also be handled by the admin. Meaning users will not be able to create an account their own, admin should add them to server database.
 
 ##### As User:
- - Users will need to contact the admin to create an account.
+ - Users will need to contact the admin in order to create an account.
  - Login...
- - Users will need to add neccessary files to their respective directories.
- - Users will be able to put their parameters into "main.conf" file, maybe will be able to add extra things there.
- - Users won't need to manually run their files, system will automatically add them to job queue.
+ - Users will need to add necessary files to their respective directories.
+ - Users will need to compile their code in their own computer or in our system. We will not handle compiling since it may need many parameters and compilation will not be a part of the job because we don’t want our users to wait for compile errors.
+ - Users will be able to put their parameters, expected runtime, executable path, job name, memory needed into a configuration file. Default is “main.conf”, if any other name is wanted they will need to specify it.
 
 Scripts and what they do
 -------------------------
@@ -87,13 +91,6 @@ Login User Management: Slurm account is always admin. Users from login servers w
 Slurm User Management: There isn't a proper user management and login system within slurm. So this is not used all.
 
 A deamon will consistently run in the background, checking for new files in user directories. Users will not be able to go into slurm manager bash. We do not want any user to interact with slurm.
-
-/*
- - ?? admin userları oluşturcak, guestler adminden izin isteyecek.
- - ?? dev'deki dosya erişim izinleri sorulacak.
- - ?? passwordlar random başlayacak, kullanıcı değiştirebilecek mi?
- - ?? Bastilion ?
-*/
 
 Assumptions
 -----------
