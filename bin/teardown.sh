@@ -1,7 +1,6 @@
 cd ../worker/
 
-docker stop c1 && docker rm c1
-docker stop c2 && docker rm c2
+docker rm $(docker stop $(docker ps -a -q --filter ancestor=honorlessman/slurm-worker:1.2 --format="{{.ID}}"))
 
 cd ../manager
 docker-compose stop
