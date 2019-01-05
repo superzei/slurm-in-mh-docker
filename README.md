@@ -9,6 +9,7 @@ System construction instructions
  - (3) Create a swarm network on manager node.
  - (4) Run ```sudo apt-get install nfs-common``` on all nodes.
  - (5) On both manager and workers build base image. Run build_base.sh script.
+ - (6) Go to login/server/ and run ```docker-compose up``` to create login server. Then execute [4].
  - (6) On manager machine execute [1], run build_run_manager.sh script to build manager image, nfs server and run them.
  - (7) On worker machines execute [2] to connect to swarm network. 
  - (8) On worker machines run ```run_worker.sh <nodename>``` to build worker image and contruct a container.
@@ -19,6 +20,7 @@ System construction instructions
  
 [3]Open ```/etc/docker/daemon.json``` with a text editor with root access. Add the first level key ```"default-runtime":"nvidia"```, then run ```sudo service docker restart```.
 
+[4]Run ```service ssh start```, ```service nscd restart```.
 
 Note: Worker should not be destroyed while working, otherwise it will become down.
 To solve this ```scontrol reconfigure```, ```scontrol update nodename=<nodename> state=down reason=hang``` and ```scontrol update nodename=<nodename> state=resume```  should be run after re-running the worker node in question.
@@ -30,7 +32,7 @@ System Usage Instructions
 ##### As admin:
 - System construction should be handled as mentioned above.
 - User management will also be handled by the admin. Meaning users will not be able to create an account their own, admin should add them to server database.
-
+- Go to ```localhost:8080``` for handling user management or configure ApachiDirectoryStudio or Jxplorer. For the letter two connect to server ```localhost:389```.
 ##### As User:
  - Users will need to contact the admin in order to create an account.
  - Login...
