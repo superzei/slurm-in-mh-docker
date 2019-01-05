@@ -10,9 +10,9 @@ System construction instructions
  - (4) Run ```sudo apt-get install nfs-common``` on all nodes.
  - (5) On both manager and workers build base image. Run build_base.sh script.
  - (6) Go to login/server/ and run ```docker-compose up``` to create login server. Then execute [4].
- - (6) On manager machine execute [1], run build_run_manager.sh script to build manager image, nfs server and run them.
- - (7) On worker machines execute [2] to connect to swarm network. 
- - (8) On worker machines run ```run_worker.sh <nodename>``` to build worker image and contruct a container.
+ - (7) On manager machine execute [1], run build_run_manager.sh script to build manager image, nfs server and run them.
+ - (8) On worker machines execute [2] to connect to swarm network. 
+ - (9) On worker machines run ```run_worker.sh <nodename>``` to build worker image and contruct a container.
 
 [1]Run ```docker swarm join-token worker ```, response will be used in worker nodes.
  
@@ -84,6 +84,54 @@ Shared File System
 
 User Management(Current approach)
 ---------------
+System construction instructions:
+(1) On both manager and workers build base image. Run build_base.sh script.
+(2) On manager machine run build_run_manager.sh script to build manager image, nfs server and run them.
+(3) On worker machines execute [1] to connect to swarm network. 
+(4) On worker machines run run_worker.sh script to build worker image and contruct a container.
+
+[1]Build alpine to connect to network
+docker run -it --name alpine<number> --network manager_slurm alpine
+
+Scripts and what they do:
+build_base.sh: Constructs base image, which contains required files and programs for slurm, required on all nodes.
+build_run_manager.sh: Constructs manager image, then constructs manager and database containers. Also deploys a container for nfs server, which is used to share files within the network. Will pass the munge key to shared location for future usage.
+run_worker.sh: Constructs worker image, and deploys a container for worker.
+teardown.sh: Simply destroys everything as name suggests.
+
+
+To go into bash
+docker exec -it <worker|manager> bash
+
+To add user to system
+useradd -m /bin/bash <username>
+    assign password to user
+    passwd <username>
+
+To send ssh request
+ssh <username>@<host_ip> -p <user_port>
+
+
+Note: Worker should not be destroyed while working, otherwise it will become down.
+Controller should be rebooted and then worker should be rebooted.
+
+MUNGE
+-----
+
+Munge used for security and dependency reasons. Sharing munge key was troublesome, required root access, but when root access is given raised an error saying "Too much permission given". So right now key is copied by hand as a temporary solution.
+
+
+Shared File System
+------------------
+GlusterFS: Did not work because we were unable to mount it onto volumes.
+
+NFS Server: A NFS server is automatically created with build_run_manager.sh script. Container has multiple shared volumes. DAtaset volume is not shared because it isn't necessarily need to be shared.
+
+Samba: We tried to fix shared file system problem with samba, but we encountered some access privilege problems, therefore we abandoned this as well. 
+
+User Management
+---------------
+
 A ssh server is required for login system. Users will send a ssh key to login to system. This is used so no one can go in to another ones directory without permission.
 
 Users will have random passwords at first.
