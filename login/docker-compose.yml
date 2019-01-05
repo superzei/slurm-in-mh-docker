@@ -36,31 +36,12 @@ services:
       - /var/lib/ldap
       - /etc/ldap/slapd.d
       - /container/service/slapd/assets/certs/
-    networks:
-      ldap:
-        aliases:
-          - server
     ports:
       - "389:389"
       - "636:636"
     domainname: "example.org" # important: same as hostname
     hostname: "example.org"
   
-  ldap-client:
-    image: honorlessman/custom-ldap-client:1.1
-    container_name: openldap-client
-    environment:
-      LDAP_DOMAIN: "example.org"   
-    stdin_open: true
-    tty: true
-    networks:
-      ldap:
-        aliases:
-          - client
-    depends_on:
-      - openldap
-    hostname: "openldap-client"
-
   phpldapadmin:
     image: osixia/phpldapadmin:latest
     container_name: phpldapadmin
@@ -72,5 +53,15 @@ services:
     depends_on:
       - openldap
 
-networks:
-  ldap:
+  openldap-client:
+    build:
+      context: ./
+    image: honorlessman/custom-ldap-client:1.0
+    container_name: client-openldap
+    ports:
+        - "22:22"
+    tty: true
+    stdin_open: true
+    depends_on:
+      - openldap
+    
