@@ -58,10 +58,26 @@ services:
       context: ./
     image: honorlessman/custom-ldap-client:1.0
     container_name: client-openldap
+    volumes:
+      - slurm_jobdir:/data
+    networks:
+      - default
+      - slurm
     ports:
         - "22:22"
     tty: true
     stdin_open: true
     depends_on:
       - openldap
+
+volumes:
+  slurm_jobdir:
+    external:
+      name: manager_slurm_jobdir
+
+networks:
+  default:
+  slurm:
+    external:
+      name: manager_slurm
     

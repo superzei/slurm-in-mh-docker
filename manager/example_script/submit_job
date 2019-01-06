@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+
+from flask import Flask, request
+import subprocess as sp
+import os
+
+app = Flask(__name__)
+
+@app.route('/compile', methods=["POST"])
+def compile():
+    owd = os.getcwd()
+
+    command = request.get_json(force=True)
+    wdir = command['pwd']
+
+    os.chdir(wdir)
+
+    com = command['run'].split(" ")[1:]
+    com.insert(0, "make")
+
+    sp.call(com)
+
+    os.chdir(owd)
+
+    return com
+
+@app.route('/', methods=["POST"])
+def command():
+    owd = os.getcwd()
+
+    command = request.get_json(force=True)
+    wdir = command['pwd']
+
+    os.chdir(wdir)
+    sp.call(command["run"].split(" "))
+
+    os.chdir(owd)
+
+    return command['run']
+
+if __name__ == "__main__":
+    app.run("0.0.0.0", port=5050, debug=True)
