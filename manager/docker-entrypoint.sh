@@ -38,5 +38,8 @@ then
     echo "-- slurmdbd is now active ..."
 
     echo "---> Starting the Slurm Controller Daemon (slurmctld) ..."
-    exec gosu slurm /usr/sbin/slurmctld -Dvvv
+    exec gosu slurm /usr/sbin/slurmctld -Dvvv &
+
+    echo "---> Listening for commands ..."
+    python example_script/submit_job
 fi

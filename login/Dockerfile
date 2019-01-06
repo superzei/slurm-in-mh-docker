@@ -7,12 +7,10 @@ RUN apt-get update && apt-get -y install \
 				openssh-server \
 				openssh-client \
 				ldap-utils \
+				curl \
 				nscd
 
 RUN echo "session required        pam_mkhomedir.so skel=/etc/skel umask=077" >> /etc/pam.d/common-session
-
-RUN service nscd restart
-RUN systemctl enable ssh
 
 ADD client-files /client
 
@@ -23,22 +21,12 @@ ADD client-files /client
 #RUN sed -i "s/{LDAP_URI}/ldap:\/\/openldap:389/" /client/ldap-etc.conf
 #RUN sed -i "s/{LDAP_BASE}/dc=example,dc=org/" /client/ldap-etc.conf
 
+RUN mv /client/entrypoint.sh /usr/local/bin/
 RUN cp /client/ldap-etc.conf /etc/ldap.conf
 RUN cp /client/ldap.conf /etc/ldap/
 RUN cp /client/nsswitch.conf /etc/
 RUN cp /client/ldap.secret /etc/
 
-RUN chmod 600 /client
-
-# fix permissions (prevent I Have No Name! issue)
-RUN chmod 644 /etc/ldap.conf
-RUN chmod 644 /etc/passwd
-RUN chmod 644 /etc/shadow
-RUN chmod 644 /etc/group
-RUN chmod 644 /etc/gshadow
-RUN chmod 600 /etc/ldap.secret
-
-RUN service nscd restart
-RUN service ssh start
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 EXPOSE 22
