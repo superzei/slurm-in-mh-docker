@@ -27,6 +27,9 @@ RUN cp /client/ldap.conf /etc/ldap/
 RUN cp /client/nsswitch.conf /etc/
 RUN cp /client/ldap.secret /etc/
 
+RUN cp /client/makex /usr/bin/
+RUN cp /client/run_sbatch /usr/bin/
+
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 EXPOSE 22
