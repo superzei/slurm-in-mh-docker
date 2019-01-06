@@ -9,7 +9,7 @@ System construction instructions
  - (3) Create a swarm network on manager node.
  - (4) Run ```sudo apt-get install nfs-common``` on all nodes.
  - (5) On both manager and workers build base image. Run build_base.sh script.
- - (6) Go to login/server/ and run ```docker-compose up``` to create login server. Then execute [4].
+ - (6) Go to login/server/ and run ```docker-compose up``` to create login server.
  - (7) On manager machine execute [1], run build_run_manager.sh script to build manager image, nfs server and run them.
  - (8) On worker machines execute [2] to connect to swarm network. 
  - (9) On worker machines run ```run_worker.sh <nodename>``` to build worker image and contruct a container.
@@ -19,8 +19,6 @@ System construction instructions
 [2]Execute response of [1].
  
 [3]Open ```/etc/docker/daemon.json``` with a text editor with root access. Add the first level key ```"default-runtime":"nvidia"```, then run ```sudo service docker restart```.
-
-[4]Run ```service ssh start```, ```service nscd restart```.
 
 Note: Worker should not be destroyed while working, otherwise it will become down.
 To solve this ```scontrol reconfigure```, ```scontrol update nodename=<nodename> state=down reason=hang``` and ```scontrol update nodename=<nodename> state=resume```  should be run after re-running the worker node in question.

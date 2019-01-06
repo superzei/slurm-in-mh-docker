@@ -31,7 +31,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
         then
                 parameters+=($parameter)
         # Check if command is executable
-        elif [[ $command == "executable_path" ]]
+        elif [[ $command == "executable" ]]
         then
                 executable=$parameter
         # Check if and expected runtime is given

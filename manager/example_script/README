@@ -1,0 +1,2 @@
+ - main.conf, job.sh, makex.sh, and run_sbatch.sh all should be in the same directory.
+ - Please run run_sbatch.sh and makex.sh while you are in their own directory, because working directory is rather important.
